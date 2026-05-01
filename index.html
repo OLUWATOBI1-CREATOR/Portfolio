@@ -192,6 +192,7 @@
                         <p>Message directly</p>
                     </a>
                     <a href="tel:+2202254829" class="glass-card contact-item">
+                        <div class="glow"></div>
                         <i data-lucide="phone"></i>
                         <span class="label">Direct Line</span>
                         <p>+220 2254829</p>
@@ -202,18 +203,18 @@
                     <div class="form-row">
                         <div class="input-group">
                             <label>Name</label>
-                            <input type="text" placeholder="Your Name" required>
+                            <input type="text" name="name" id="form-name" placeholder="Your Name" required>
                         </div>
                         <div class="input-group">
                             <label>Email</label>
-                            <input type="email" placeholder="email@example.com" required>
+                            <input type="email" name="email" id="form-email" placeholder="email@example.com" required>
                         </div>
                     </div>
                     <div class="input-group">
                         <label>Message</label>
-                        <textarea rows="6" placeholder="Project details..."></textarea>
+                        <textarea name="message" id="form-message" rows="6" placeholder="Project details..." required></textarea>
                     </div>
-                    <button type="submit" class="btn-submit">Initialize Transmission</button>
+                    <button type="submit" class="btn-submit" id="submit-btn">Initialize Transmission</button>
                 </form>
             </div>
         </section>
