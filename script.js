@@ -110,36 +110,36 @@ window.openModal = function(index) {
     const project = PROJECTS[index];
     modalBody.innerHTML = `
         <div class="modal-header" style="display: flex; align-items: center; gap: 24px; margin-bottom: 40px; padding-top: 20px;">
-            <div class="project-icon" style="flex-shrink: 0; transform: scale(1.5);">
+            <div class="project-icon" style="flex-shrink: 0; transform: scale(1.2);">
                 <i data-lucide="${project.icon}"></i>
             </div>
             <div>
-                <p class="project-type" style="margin-bottom: 8px;">${project.type}</p>
-                <h3 style="font-size: 3rem;">${project.title}</h3>
+                <p class="project-type" style="margin-bottom: 4px; font-size: 10px;">${project.type}</p>
+                <h3 style="font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1;">${project.title}</h3>
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 48px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 48px;">
-            <div>
-                <h6 style="color: white; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 24px;">Project Overview</h6>
-                <p style="font-size: 1.25rem; font-weight: 300; color: #9ca3af; line-height: 1.8;">${project.longDescription}</p>
+        <div class="modal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 40px;">
+            <div class="modal-main">
+                <h6 style="color: white; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 20px; opacity: 0.5;">Project Overview</h6>
+                <p style="font-size: clamp(1rem, 2vw, 1.25rem); font-weight: 300; color: #9ca3af; line-height: 1.7;">${project.longDescription}</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 48px; padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
                     <div>
-                        <h6 style="color: #444; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">My Role</h6>
-                        <p style="color: white; font-style: italic;">${project.role}</p>
+                        <h6 style="color: var(--accent); font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Role</h6>
+                        <p style="color: white; font-size: 14px; font-style: italic;">${project.role}</p>
                     </div>
                     <div>
-                        <h6 style="color: #444; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Status</h6>
-                        <p style="color: white;">${project.status}</p>
+                        <h6 style="color: var(--accent); font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Status</h6>
+                        <p style="color: white; font-size: 14px;">${project.status}</p>
                     </div>
                 </div>
             </div>
             
-            <div>
-                <h6 style="color: white; font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 24px;">Stack</h6>
+            <div class="modal-sidebar">
+                <h6 style="color: white; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 20px; opacity: 0.5;">Tech Stack</h6>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    ${project.tech.map(t => `<span class="tag" style="background: rgba(255,255,255,0.03); color: #888; border-color: rgba(255,255,255,0.05); padding: 8px 16px;">${t}</span>`).join('')}
+                    ${project.tech.map(t => `<span class="tag" style="background: rgba(255,255,255,0.03); color: #888; border-color: rgba(255,255,255,0.05); padding: 6px 14px; font-size: 10px;">${t}</span>`).join('')}
                 </div>
             </div>
         </div>
@@ -182,10 +182,20 @@ const closeMobileBtn = document.getElementById('close-menu');
 
 mobileToggle.addEventListener('click', () => {
     mobileMenu.classList.add('active');
+    document.body.style.overflow = 'hidden';
 });
 
 closeMobileBtn.addEventListener('click', () => {
     mobileMenu.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
+
+// Close mobile menu when a link is clicked
+document.querySelectorAll('.mobile-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    });
 });
 
 // Extra CSS for Mobile Menu and Reveal
@@ -209,33 +219,63 @@ const extraCSS = `
         padding: 48px;
         flex-direction: column;
         justify-content: center;
+        opacity: 0;
+        transition: opacity 0.4s ease;
     }
     
     #mobile-menu.active {
         display: flex;
+        opacity: 1;
     }
     
     .mobile-links {
         display: flex;
         flex-direction: column;
-        gap: 32px;
+        gap: 24px;
     }
     
     .mobile-links a {
-        font-size: 3rem;
+        font-size: 3.5rem;
         font-family: var(--font-display);
         color: white;
         text-decoration: none;
         font-weight: 700;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    
+    #mobile-menu.active .mobile-links a {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Staggered delay for links */
+    #mobile-menu.active .mobile-links a:nth-child(1) { transition-delay: 0.1s; }
+    #mobile-menu.active .mobile-links a:nth-child(2) { transition-delay: 0.2s; }
+    #mobile-menu.active .mobile-links a:nth-child(3) { transition-delay: 0.3s; }
+    #mobile-menu.active .mobile-links a:nth-child(4) { transition-delay: 0.4s; }
     
     #close-menu {
         position: absolute;
         top: 32px;
         right: 32px;
-        background: none;
-        border: none;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
         color: white;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    #close-menu:hover {
+        background: var(--accent);
+        transform: rotate(90deg);
     }
     
     .reveal {
