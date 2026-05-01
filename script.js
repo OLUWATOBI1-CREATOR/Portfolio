@@ -289,14 +289,77 @@ const styleSheet = document.createElement("style");
 styleSheet.innerText = extraCSS;
 document.head.appendChild(styleSheet);
 
-// Form handling (Mock)
+// Form handling (Real Transmission via FormSubmit)
 const contactForm = document.getElementById('contact-form');
-contactForm.addEventListener('submit', (e) => {
+const submitBtn = document.getElementById('submit-btn');
+
+contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = contactForm.querySelector('button');
-    btn.innerText = 'Transmission Sent';
-    btn.style.background = '#059669';
-    contactForm.reset();
+    
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = 'Transmitting...';
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+
+    const name = document.getElementById('form-name').value;
+    const email = document.getElementById('form-email').value;
+    const message = document.getElementById('form-message').value;
+
+    try {
+        const response = await fetch("https://formsubmit.co/ajax/davidarulefela@gmail.com", {
+            method: "POST",
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: message,
+                _subject: `New Portfolio Inquiry from ${name}`
+            })
+        });
+
+        if (response.ok) {
+            submitBtn.innerText = 'Transmission Successful';
+            submitBtn.style.background = '#059669';
+            submitBtn.style.color = 'white';
+            contactForm.reset();
+            
+            setTimeout(() => {
+                submitBtn.innerText = originalText;
+                submitBtn.style.background = 'white';
+                submitBtn.style.color = 'black';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }, 5000);
+        } else {
+            throw new Error('Transmission failed');
+        }
+    } catch (error) {
+        submitBtn.innerText = 'Transmission Failed';
+        submitBtn.style.background = '#dc2626';
+        submitBtn.style.color = 'white';
+        
+        setTimeout(() => {
+            submitBtn.innerText = originalText;
+            submitBtn.style.background = 'white';
+            submitBtn.style.color = 'black';
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        }, 3000);
+    }
+});
+
+// Contact Glow Effect
+document.querySelectorAll('.contact-item').forEach(item => {
+    item.addEventListener('mousemove', (e) => {
+        const rect = item.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        item.style.setProperty('--mouse-x', `${x}%`);
+        item.style.setProperty('--mouse-y', `${y}%`);
+    });
 });
 
 // Initialize
